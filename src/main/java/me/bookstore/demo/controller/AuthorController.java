@@ -44,7 +44,7 @@ public class AuthorController {
        return ResponseEntity.ok(authorService.updateAuthor(authorId, author));
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAuthor(@RequestBody UUID id) {
         authorService.deleteAuthor(id);
         return ResponseEntity.noContent().build();
