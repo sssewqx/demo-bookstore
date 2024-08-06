@@ -1,0 +1,12 @@
+version: '3'
+services:
+  db:
+    container_name: bookstore-data
+    restart: always
+    image: postgres:16.2-alpine
+    environment:
+      - POSTGRES_DB=bookstore
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5431:5432"

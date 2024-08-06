@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - changeSet:
+      id: initial-db-schema
+      author: demo.x
+  - include:
+      file: classpath:db/liquibase/changes/01-init-db-schema.yml
