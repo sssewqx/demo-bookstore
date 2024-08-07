@@ -12,5 +12,6 @@ public record AuthorDto(
         @NotBlank
         String lastName,
         @Nullable
-        List<UUID> booksId) {
+        List<UUID> booksId
+) {
 }

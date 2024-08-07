@@ -2,6 +2,7 @@ package me.bookstore.demo.service;
 
 import lombok.RequiredArgsConstructor;
 import me.bookstore.demo.dto.BookDto;
+import me.bookstore.demo.dto.BookUpdateRequest;
 import me.bookstore.demo.entity.Book;
 import me.bookstore.demo.mapper.BookMapper;
 import me.bookstore.demo.repository.AuthorRepository;
@@ -41,12 +42,10 @@ public class BookService {
         return bookEntity.getId();
     }
 
-    public BookDto updateBook(UUID id, BookDto bookDto) {
-        var book = bookRepository.findById(id).orElseThrow(()
-                -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found."));
-        bookMapper.bookDtoToBook(bookDto, authorRepository, book);
-        bookRepository.save(book);
-        return bookMapper.bookToBookDto(book);
+    public BookUpdateRequest updateBook(UUID id, BookUpdateRequest book) {
+        int updatedRows = bookRepository.updateBook(id, book.title());
+        if (updatedRows == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found.");
+        return book;
     }
 
     public void deleteBook(UUID id) {

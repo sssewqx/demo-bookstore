@@ -2,6 +2,7 @@ package me.bookstore.demo.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.bookstore.demo.dto.AuthorDto;
+import me.bookstore.demo.dto.AuthorUpdateRequest;
 import me.bookstore.demo.entity.Author;
 import me.bookstore.demo.service.AuthorService;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class AuthorController {
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<AuthorDto> updateAuthor(UUID authorId,@RequestBody AuthorDto author) {
+    public ResponseEntity<AuthorUpdateRequest> updateAuthor(UUID authorId, @RequestBody AuthorUpdateRequest author) {
        return ResponseEntity.ok(authorService.updateAuthor(authorId, author));
     }
 
