@@ -52,5 +52,6 @@ public class BookService {
         bookRepository.findById(id)
                 .orElseThrow(()
                         -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found."));
+        bookRepository.deleteById(id);
     }
 }

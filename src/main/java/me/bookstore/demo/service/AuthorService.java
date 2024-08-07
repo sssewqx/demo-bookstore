@@ -54,6 +54,7 @@ public class AuthorService {
         authorRepository.findById(id)
                 .orElseThrow(()
                         -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found."));
+        authorRepository.deleteById(id);
     }
 
 }
