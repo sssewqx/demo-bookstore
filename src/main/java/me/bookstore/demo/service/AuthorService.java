@@ -51,10 +51,8 @@ public class AuthorService {
     }
 
     public void deleteAuthor(UUID id) {
-        authorRepository.findById(id)
-                .orElseThrow(()
-                        -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found."));
-        authorRepository.deleteById(id);
+        if (authorRepository.deleteAuthorById(id) == 0)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found.");
     }
 
 }

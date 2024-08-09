@@ -49,9 +49,7 @@ public class BookService {
     }
 
     public void deleteBook(UUID id) {
-        bookRepository.findById(id)
-                .orElseThrow(()
-                        -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found."));
-        bookRepository.deleteById(id);
+       if (bookRepository.deleteBookById(id) == 0)
+           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found.");
     }
 }
