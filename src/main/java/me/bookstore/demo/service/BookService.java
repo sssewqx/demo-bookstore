@@ -43,8 +43,8 @@ public class BookService {
     }
 
     public BookUpdateRequest updateBook(UUID id, BookUpdateRequest book) {
-        int updatedRows = bookRepository.updateBook(id, book.title());
-        if (updatedRows == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found.");
+        if (bookRepository.updateBook(id, book.title()) == 0)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found.");
         return book;
     }
 

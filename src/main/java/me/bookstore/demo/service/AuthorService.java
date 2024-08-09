@@ -45,8 +45,8 @@ public class AuthorService {
     }
 
     public AuthorUpdateRequest updateAuthor(UUID id, AuthorUpdateRequest author) {
-      int updatedRows = authorRepository.updateAuthor(id, author.firstName(), author.lastName());
-      if (updatedRows == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found.");
+      if (authorRepository.updateAuthor(id, author.firstName(), author.lastName()) == 0)
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found.");
       return author;
     }
 
