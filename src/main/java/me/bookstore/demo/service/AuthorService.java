@@ -40,8 +40,8 @@ public class AuthorService {
 
     public UUID createAuthor(AuthorDto authorDto) {
         Author authorEntity = authorMapper.authorDtoToAuthor(authorDto, bookRepository, new Author());
-        authorRepository.save(authorEntity);
-        return authorEntity.getId();
+        var savedAuthor =  authorRepository.save(authorEntity);
+        return savedAuthor.getId();
     }
 
     public AuthorUpdateRequest updateAuthor(UUID id, AuthorUpdateRequest author) {

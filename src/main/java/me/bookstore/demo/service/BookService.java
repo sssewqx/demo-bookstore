@@ -38,8 +38,8 @@ public class BookService {
 
     public UUID createBook(BookDto bookDto) {
         Book bookEntity = bookMapper.bookDtoToBook(bookDto, authorRepository, new Book());
-        bookRepository.save(bookEntity);
-        return bookEntity.getId();
+        var savedBook = bookRepository.save(bookEntity);
+        return savedBook.getId();
     }
 
     public BookUpdateRequest updateBook(UUID id, BookUpdateRequest book) {
