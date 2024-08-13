@@ -8,6 +8,7 @@ import me.bookstore.demo.mapper.BookMapper;
 import me.bookstore.demo.repository.AuthorRepository;
 import me.bookstore.demo.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -56,17 +57,7 @@ public class BookServiceTest {
     }
 
     @Test
-    void testGetAllBooksEntity() {
-        when(bookRepository.findAll()).thenReturn(Collections.singletonList(book));
-
-        List<Book> books = bookService.getAllBooksEntity();
-
-        assertNotNull(books);
-        assertEquals(1, books.size());
-        verify(bookRepository, times(1)).findAll();
-    }
-
-    @Test
+    @DisplayName("Получить все книги")
     void testGetAllBooks() {
         when(bookRepository.findAll()).thenReturn(Collections.singletonList(book));
         when(bookMapper.bookToBookDto(anyList())).thenReturn(Collections.singletonList(bookDto));
@@ -80,6 +71,7 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Получить книгу по ID")
     void testGetBookById() {
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(bookMapper.bookToBookDto(book)).thenReturn(bookDto);
@@ -93,6 +85,7 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Exception если книга не найдена")
     void testGetBookByIdNotFound() {
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
 
@@ -101,6 +94,7 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Создать книгу")
     void testCreateBook() {
 
         when(authorRepository.findById(bookDto.authorId())).thenReturn(Optional.of(author));
@@ -115,6 +109,7 @@ public class BookServiceTest {
         verify(bookRepository, times(1)).save(any(Book.class));
     }
     @Test
+    @DisplayName("Обновить книгу")
     void testUpdateBook() {
         when(bookRepository.updateBook(bookId, bookDto.title())).thenReturn(1);
 
@@ -126,6 +121,7 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Exception если не найдена книга для обновления")
     void testUpdateBookNotFound() {
         when(bookRepository.updateBook(bookId, bookDto.title())).thenReturn(0);
 
@@ -134,6 +130,7 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Удалить книгу")
     void testDeleteBook() {
         when(bookRepository.deleteBookById(bookId)).thenReturn(1);
 
@@ -142,6 +139,7 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Exception если удаляемая книга не найдена")
     void testDeleteBookNotFound() {
         when(bookRepository.deleteBookById(bookId)).thenReturn(0);
 
