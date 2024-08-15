@@ -1,5 +1,6 @@
 package me.bookstore.demo.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import me.bookstore.demo.dto.BookDto;
 import me.bookstore.demo.dto.BookUpdateRequest;
@@ -7,9 +8,7 @@ import me.bookstore.demo.entity.Book;
 import me.bookstore.demo.mapper.BookMapper;
 import me.bookstore.demo.repository.AuthorRepository;
 import me.bookstore.demo.repository.BookRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class BookService {
 
     public BookDto getBookById(UUID id) {
         Book bookEntity = bookRepository.findById(id).orElseThrow(()
-                -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found."));
+                -> new EntityNotFoundException("Book not found."));
         return bookMapper.bookToBookDto(bookEntity);
     }
 
@@ -44,12 +43,12 @@ public class BookService {
 
     public BookUpdateRequest updateBook(UUID id, BookUpdateRequest book) {
         if (bookRepository.updateBook(id, book.title()) == 0)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found.");
+            throw new EntityNotFoundException("Book not found.");
         return book;
     }
 
     public void deleteBook(UUID id) {
        if (bookRepository.deleteBookById(id) == 0)
-           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found.");
+           throw new EntityNotFoundException("Book not found.");
     }
 }

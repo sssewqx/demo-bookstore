@@ -1,5 +1,6 @@
 package me.bookstore.demo.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import me.bookstore.demo.dto.AuthorDto;
 import me.bookstore.demo.dto.AuthorUpdateRequest;
@@ -7,9 +8,7 @@ import me.bookstore.demo.entity.Author;
 import me.bookstore.demo.mapper.AuthorMapper;
 import me.bookstore.demo.repository.AuthorRepository;
 import me.bookstore.demo.repository.BookRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -34,7 +33,7 @@ public class AuthorService {
     public AuthorDto getAuthorById(UUID id) {
         Author authorEntity = authorRepository.findById(id)
                 .orElseThrow(()
-                        -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found."));
+                        -> new EntityNotFoundException("Author not found."));
         return authorMapper.authorToAuthorDto(authorEntity);
     }
 
@@ -46,13 +45,13 @@ public class AuthorService {
 
     public AuthorUpdateRequest updateAuthor(UUID id, AuthorUpdateRequest author) {
       if (authorRepository.updateAuthor(id, author.firstName(), author.lastName()) == 0)
-          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found.");
+          throw new EntityNotFoundException("Author not found.");
       return author;
     }
 
     public void deleteAuthor(UUID id) {
         if (authorRepository.deleteAuthorById(id) == 0)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found.");
+            throw new EntityNotFoundException("Author not found.");
     }
 
 }
