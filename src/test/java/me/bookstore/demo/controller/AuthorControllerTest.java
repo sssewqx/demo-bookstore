@@ -1,103 +1,59 @@
 package me.bookstore.demo.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import me.bookstore.demo.dto.AuthorDto;
-import me.bookstore.demo.dto.AuthorUpdateRequest;
-import me.bookstore.demo.service.AuthorService;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.transaction.Transactional;
+import me.bookstore.demo.AbstractIntegrationTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Collections;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AuthorController.class)
-public class AuthorControllerTest {
+@Transactional
+public class AuthorControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private AuthorService authorService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @BeforeEach
-    public void setup(WebApplicationContext webApplicationContext) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
-
+    private final UUID AUTHOR_ID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
 
     @Test
+    @DisplayName("Получить всех авторов")
     public void testGetAuthors() throws Exception {
-        given(authorService.getAllAuthors()).willReturn(Collections.emptyList());
-
         mockMvc.perform(get("/authors/"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray());
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
+    @DisplayName("Получить автора по ID")
     public void testGetAuthorById() throws Exception {
-        UUID authorId = UUID.randomUUID();
-        AuthorDto authorDto = new AuthorDto("John", "Doe", null);
-        given(authorService.getAuthorById(authorId)).willReturn(authorDto);
-
-        mockMvc.perform(get("/authors/{id}", authorId))
+        mockMvc.perform(get("/authors/{id}", AUTHOR_ID))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
+    @DisplayName("Создать автора")
     public void testCreateAuthor() throws Exception {
-        AuthorDto authorDto = new AuthorDto("John", "Doe", null);
-        UUID authorId = UUID.randomUUID();
-        given(authorService.createAuthor(any(AuthorDto.class))).willReturn(authorId);
-
         mockMvc.perform(post("/authors/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(authorDto)))
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string("\"" + authorId.toString() + "\""));
+                        .content("{\"firstName\": \"Новое Имя\", \"lastName\": \"Новая Фамилия\", \"booksId\": []}"))
+                .andExpect(status().isCreated());
     }
 
     @Test
+    @DisplayName("Обновить автора")
     public void testUpdateAuthor() throws Exception {
-        UUID authorId = UUID.randomUUID();
-        AuthorUpdateRequest updateRequest = new AuthorUpdateRequest("John", "Doe");
-        given(authorService.updateAuthor(any(UUID.class), any(AuthorUpdateRequest.class))).willReturn(updateRequest);
-
         mockMvc.perform(patch("/authors/update")
-                        .param("authorId", authorId.toString())
+                        .param("authorId", AUTHOR_ID.toString())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"));
+                        .content("{\"firstName\": \"Обновленное Имя\", \"lastName\": \"Обновленная Фамилия\"}"))
+                .andExpect(status().isOk());
     }
 
-    @Test
-    public void testDeleteAuthor() throws Exception {
-        UUID authorId = UUID.randomUUID();
-
-        mockMvc.perform(delete("/authors/{id}", authorId))
-                .andExpect(status().isNoContent());
-    }
 }

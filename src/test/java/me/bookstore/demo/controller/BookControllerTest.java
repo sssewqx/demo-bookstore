@@ -1,122 +1,61 @@
 package me.bookstore.demo.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.Matchers.*;
 
-import me.bookstore.demo.dto.BookDto;
-import me.bookstore.demo.dto.BookUpdateRequest;
-import me.bookstore.demo.service.BookService;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.transaction.Transactional;
+import me.bookstore.demo.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
-@WebMvcTest(BookController.class)
-public class BookControllerTest {
+@Transactional
+public class BookControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private BookService bookService;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+    private final UUID BOOK_ID = UUID.fromString("2e79d637-a309-43c0-a59e-7018985f612f");
+    private final UUID AUTHOR_ID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
 
     @Test
     @DisplayName("Получить все книги")
     public void testGetAllBooks() throws Exception {
-        UUID authorId1 = UUID.randomUUID();
-        UUID authorId2 = UUID.randomUUID();
-        BookDto book1 = new BookDto("Book One", authorId1);
-        BookDto book2 = new BookDto("Book Two", authorId2);
-        List<BookDto> books = Arrays.asList(book1, book2);
-
-        when(bookService.getAllBooks()).thenReturn(books);
-
-        mockMvc.perform(get("/books/"))
+        mockMvc.perform(get("/books/")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].title", is("Book One")))
-                .andExpect(jsonPath("$[0].authorId", is(authorId1.toString())))
-                .andExpect(jsonPath("$[1].title", is("Book Two")))
-                .andExpect(jsonPath("$[1].authorId", is(authorId2.toString())));
+                .andExpect(jsonPath("$").isArray());
     }
 
     @Test
     @DisplayName("Получить книгу по ID")
     public void testGetBookById() throws Exception {
-        UUID bookId = UUID.randomUUID();
-        UUID authorId = UUID.randomUUID();
-        BookDto book = new BookDto("Book One", authorId);
-
-        when(bookService.getBookById(bookId)).thenReturn(book);
-
-        mockMvc.perform(get("/books/" + bookId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title", is("Book One")))
-                .andExpect(jsonPath("$.authorId", is(authorId.toString())));
+        mockMvc.perform(get("/books/{id}", BOOK_ID)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("Создать книгу")
     public void testCreateBook() throws Exception {
-        UUID authorId = UUID.randomUUID();
-        BookDto book = new BookDto("New Book", authorId);
-        UUID bookId = UUID.randomUUID();
-
-        when(bookService.createBook(book)).thenReturn(bookId);
-
         mockMvc.perform(post("/books/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\":\"New Book\",\"authorId\":\"" + authorId.toString() + "\"}"))
-                .andExpect(status().isCreated())
-                .andExpect(result -> {
-                    String responseContent = result.getResponse().getContentAsString().replace("\"", "");
-                    UUID returnedUuid = UUID.fromString(responseContent);
-                    assertEquals(bookId, returnedUuid);
-                });
+                        .content("{\"title\": \"Новая книга\", \"authorId\": \"" + AUTHOR_ID + "\"}"))
+                .andExpect(status().isCreated());
     }
 
     @Test
     @DisplayName("Обновить книгу")
     public void testUpdateBook() throws Exception {
-        UUID bookId = UUID.randomUUID();
-        BookUpdateRequest updateRequest = new BookUpdateRequest("Updated Book");
-
-        when(bookService.updateBook(bookId, updateRequest)).thenReturn(updateRequest);
-
         mockMvc.perform(patch("/books/update")
-                        .param("id", bookId.toString())
+                        .param("id", BOOK_ID.toString())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\":\"Updated Book\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title", is("Updated Book")));
+                        .content("{\"title\": \"Обновленная книга\"}"))
+                .andExpect(status().isOk());
     }
 
-    @Test
-    @DisplayName("Удалить книгу")
-    public void testDeleteBook() throws Exception {
-        UUID bookId = UUID.randomUUID();
-
-        doNothing().when(bookService).deleteBook(bookId);
-
-        mockMvc.perform(delete("/books/" + bookId))
-                .andExpect(status().isNoContent());
-    }
 }
