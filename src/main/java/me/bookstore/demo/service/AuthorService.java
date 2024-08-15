@@ -21,6 +21,7 @@ public class AuthorService {
     private final AuthorMapper authorMapper;
 
     private static final int DELETE_FAILED = 0;
+    private static final int UPDATE_FAILED = 0;
 
 
     public List<Author> getAllAuthorsEntity() {
@@ -46,7 +47,7 @@ public class AuthorService {
     }
 
     public AuthorUpdateRequest updateAuthor(UUID id, AuthorUpdateRequest author) {
-      if (authorRepository.updateAuthor(id, author.firstName(), author.lastName()) == 0)
+      if (authorRepository.updateAuthor(id, author.firstName(), author.lastName()) == UPDATE_FAILED)
           throw new EntityNotFoundException("Author not found.");
       return author;
     }

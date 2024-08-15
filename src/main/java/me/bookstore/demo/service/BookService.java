@@ -22,6 +22,7 @@ public class BookService {
     private final BookMapper bookMapper;
 
     private static final int DELETE_FAILED = 0;
+    private static final int UPDATE_FAILED = 0;
 
     public List<Book> getAllBooksEntity() {
         return bookRepository.findAll();
@@ -44,7 +45,7 @@ public class BookService {
     }
 
     public BookUpdateRequest updateBook(UUID id, BookUpdateRequest book) {
-        if (bookRepository.updateBook(id, book.title()) == 0)
+        if (bookRepository.updateBook(id, book.title()) == UPDATE_FAILED)
             throw new EntityNotFoundException("Book not found.");
         return book;
     }
