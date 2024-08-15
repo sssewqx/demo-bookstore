@@ -50,8 +50,7 @@ public class AuthorService {
     }
 
     public void deleteAuthor(UUID id) {
-        if (authorRepository.deleteAuthorById(id) == 0)
-            throw new EntityNotFoundException("Author not found.");
+        authorRepository.deleteById(id);
     }
 
 }

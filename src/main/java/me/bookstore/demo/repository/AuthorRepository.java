@@ -13,9 +13,4 @@ public interface AuthorRepository extends JpaRepository<Author, UUID> {
     @Transactional
     @Query("UPDATE Author a SET a.firstName = ?2, a.lastName = ?3 WHERE a.id = ?1")
     int updateAuthor(UUID id, String firstName, String lastName);
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Author a WHERE a.id = :id")
-    int deleteAuthorById(UUID id);
 }
