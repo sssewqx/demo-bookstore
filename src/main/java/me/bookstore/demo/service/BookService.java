@@ -9,9 +9,7 @@ import me.bookstore.demo.mapper.BookMapper;
 import me.bookstore.demo.repository.AuthorRepository;
 import me.bookstore.demo.repository.BookRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-
 import java.util.UUID;
 
 @Service

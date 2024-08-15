@@ -4,10 +4,12 @@ import me.bookstore.demo.dto.BookDto;
 import me.bookstore.demo.entity.Author;
 import me.bookstore.demo.entity.Book;
 import me.bookstore.demo.repository.AuthorRepository;
-import org.mapstruct.*;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.UUID;
 

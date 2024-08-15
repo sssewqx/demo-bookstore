@@ -1,8 +1,5 @@
 package me.bookstore.demo.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import jakarta.transaction.Transactional;
 import me.bookstore.demo.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
@@ -10,8 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.util.UUID;
+
+import static java.util.UUID.fromString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @Transactional
 public class BookControllerTest extends AbstractIntegrationTest {
@@ -19,8 +24,8 @@ public class BookControllerTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private final UUID BOOK_ID = UUID.fromString("2e79d637-a309-43c0-a59e-7018985f612f");
-    private final UUID AUTHOR_ID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
+    private final UUID BOOK_ID = fromString("2e79d637-a309-43c0-a59e-7018985f612f");
+    private final UUID AUTHOR_ID = fromString("123e4567-e89b-12d3-a456-426614174000");
 
     @Test
     @DisplayName("Получить все книги")
@@ -61,10 +66,8 @@ public class BookControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Удалить книгу")
     public void testDeleteBook() throws Exception {
-
         mockMvc.perform(delete("/books/{id}", BOOK_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
-
 }

@@ -4,12 +4,15 @@ import me.bookstore.demo.dto.AuthorDto;
 import me.bookstore.demo.entity.Author;
 import me.bookstore.demo.entity.Book;
 import me.bookstore.demo.repository.BookRepository;
-import org.mapstruct.*;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface AuthorMapper {

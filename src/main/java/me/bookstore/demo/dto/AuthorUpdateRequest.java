@@ -7,5 +7,4 @@ public record AuthorUpdateRequest(
         String firstName,
         @NotBlank
         String lastName
-) {
-}
+) { }

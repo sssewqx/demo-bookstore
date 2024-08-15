@@ -7,11 +7,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static java.util.UUID.fromString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
 public class AuthorControllerTest extends AbstractIntegrationTest {
@@ -19,7 +23,7 @@ public class AuthorControllerTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private final UUID AUTHOR_ID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
+    private final UUID AUTHOR_ID = fromString("123e4567-e89b-12d3-a456-426614174000");
 
     @Test
     @DisplayName("Получить всех авторов")
@@ -59,11 +63,8 @@ public class AuthorControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Удалить автора")
     public void testDeleteAuthor() throws Exception {
-
         mockMvc.perform(delete("/authors/{id}", AUTHOR_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
-
-
 }

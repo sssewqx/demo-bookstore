@@ -1,7 +1,5 @@
 package me.bookstore.demo.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +9,13 @@ import me.bookstore.demo.dto.AuthorUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.List;
 import java.util.UUID;
+
+import static java.util.UUID.fromString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -21,13 +23,14 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
 
     private final AuthorService authorService;
 
-    private final UUID AUTHOR_ID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
-    private final UUID INVALID_AUTHOR_ID = UUID.fromString("838f1727-36ca-4f51-bf8b-4d2bf59300be");
+    private final UUID AUTHOR_ID = fromString("123e4567-e89b-12d3-a456-426614174000");
+    private final UUID INVALID_AUTHOR_ID = fromString("838f1727-36ca-4f51-bf8b-4d2bf59300be");
 
     @Test
     @DisplayName("Получить всех авторов")
     public void testGetAllAuthors() {
         List<AuthorDto> authorDtos = authorService.getAllAuthors();
+
         assertNotNull(authorDtos);
     }
 
@@ -35,6 +38,7 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
     @DisplayName("Получить автора по ID")
     public void testGetAuthorById() {
         AuthorDto authorDto = authorService.getAuthorById(AUTHOR_ID);
+
         assertNotNull(authorDto);
         assertNotNull(authorDto.booksId());
     }
@@ -49,7 +53,9 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
     @DisplayName("Создать автора")
     public void testCreateAuthor() {
         AuthorDto authorDto = new AuthorDto("John", "Doe", List.of(UUID.randomUUID()));
+
         UUID authorId = authorService.createAuthor(authorDto);
+
         assertNotNull(authorId);
     }
 
@@ -58,6 +64,7 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
     public void testUpdateAuthor() {
         AuthorUpdateRequest updateRequest = new AuthorUpdateRequest("Jane", "Doe");
         AuthorUpdateRequest updatedAuthor = authorService.updateAuthor(AUTHOR_ID, updateRequest);
+
         assertEquals("Jane", updatedAuthor.firstName());
         assertEquals("Doe", updatedAuthor.lastName());
     }
@@ -66,6 +73,7 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
     @DisplayName("Обновить несуществующего автора")
     public void testUpdateAuthorNotFound() {
         AuthorUpdateRequest updateRequest = new AuthorUpdateRequest("Jane", "Doe");
+
         assertThrows(EntityNotFoundException.class, ()
                 -> authorService.updateAuthor(INVALID_AUTHOR_ID, updateRequest));
     }
@@ -74,6 +82,7 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
     @DisplayName("Удалить автора")
     public void testDeleteAuthor() {
         authorService.deleteAuthor(AUTHOR_ID);
+
         assertThrows(EntityNotFoundException.class, () -> authorService.getAuthorById(AUTHOR_ID));
     }
 
@@ -82,5 +91,4 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
     public void testDeleteAuthorNotFound() {
         assertThrows(EntityNotFoundException.class, () -> authorService.deleteAuthor(INVALID_AUTHOR_ID));
     }
-
 }
