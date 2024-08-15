@@ -56,4 +56,14 @@ public class AuthorControllerTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @DisplayName("Удалить автора")
+    public void testDeleteAuthor() throws Exception {
+
+        mockMvc.perform(delete("/authors/{id}", AUTHOR_ID)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+
 }

@@ -40,7 +40,7 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("Exception если автор небыл найден по ID")
+    @DisplayName("Найти несуществующего автора по IP")
     public void testGetAuthorByIdNotFound() {
         assertThrows(EntityNotFoundException.class, () -> authorService.getAuthorById(INVALID_AUTHOR_ID));
     }
@@ -63,7 +63,7 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("Exception если обновляемый автор не найден")
+    @DisplayName("Обновить несуществующего автора")
     public void testUpdateAuthorNotFound() {
         AuthorUpdateRequest updateRequest = new AuthorUpdateRequest("Jane", "Doe");
         assertThrows(EntityNotFoundException.class, ()
@@ -75,6 +75,12 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
     public void testDeleteAuthor() {
         authorService.deleteAuthor(AUTHOR_ID);
         assertThrows(EntityNotFoundException.class, () -> authorService.getAuthorById(AUTHOR_ID));
+    }
+
+    @Test
+    @DisplayName("Удалить несуществующего автора")
+    public void testDeleteAuthorNotFound() {
+        assertThrows(EntityNotFoundException.class, () -> authorService.deleteAuthor(INVALID_AUTHOR_ID));
     }
 
 }

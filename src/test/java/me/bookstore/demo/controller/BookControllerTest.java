@@ -58,4 +58,13 @@ public class BookControllerTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @DisplayName("Удалить книгу")
+    public void testDeleteBook() throws Exception {
+
+        mockMvc.perform(delete("/books/{id}", BOOK_ID)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
 }

@@ -20,6 +20,8 @@ public class AuthorService {
     private final BookRepository bookRepository;
     private final AuthorMapper authorMapper;
 
+    private static final int DELETE_FAILED = 0;
+
 
     public List<Author> getAllAuthorsEntity() {
         return authorRepository.findAll();
@@ -50,7 +52,8 @@ public class AuthorService {
     }
 
     public void deleteAuthor(UUID id) {
-        authorRepository.deleteById(id);
+        if (authorRepository.deleteByIdNativeQuery(id) == DELETE_FAILED)
+            throw new EntityNotFoundException("Author not found.");
     }
 
 }

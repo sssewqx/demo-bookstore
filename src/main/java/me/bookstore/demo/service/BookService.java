@@ -21,6 +21,8 @@ public class BookService {
     private final AuthorRepository authorRepository;
     private final BookMapper bookMapper;
 
+    private static final int DELETE_FAILED = 0;
+
     public List<Book> getAllBooksEntity() {
         return bookRepository.findAll();
     }
@@ -48,6 +50,7 @@ public class BookService {
     }
 
     public void deleteBook(UUID id) {
-      bookRepository.deleteById(id);
+        if (bookRepository.deleteByIdNativeQuery(id) == DELETE_FAILED)
+            throw new EntityNotFoundException("Book not found.");
     }
 }

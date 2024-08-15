@@ -40,7 +40,7 @@ public class BookServiceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("Exception если книга не найдена")
+    @DisplayName("Найти несуществующую книгу по ID")
     void testGetBookByIdNotFound() {
         assertThrows(EntityNotFoundException.class, () -> bookService.getBookById(INVALID_BOOK_ID));
     }
@@ -63,7 +63,7 @@ public class BookServiceTest extends AbstractIntegrationTest {
 
 
     @Test
-    @DisplayName("Exception если не найдена книга для обновления")
+    @DisplayName("Обновить несуществующую книгу")
     void testUpdateBookNotFound() {
         BookUpdateRequest updateRequest = new BookUpdateRequest("New Title");
         assertThrows(EntityNotFoundException.class, ()
@@ -75,6 +75,12 @@ public class BookServiceTest extends AbstractIntegrationTest {
     public void testDeleteBook() {
         bookService.deleteBook(BOOK_ID);
         assertThrows(EntityNotFoundException.class, () -> bookService.getBookById(BOOK_ID));
+    }
+
+    @Test
+    @DisplayName("Удалить несуществующую книгу")
+    public void testDeleteBookNotFound() {
+        assertThrows(EntityNotFoundException.class, () -> bookService.getBookById(INVALID_BOOK_ID));
     }
 
 }
