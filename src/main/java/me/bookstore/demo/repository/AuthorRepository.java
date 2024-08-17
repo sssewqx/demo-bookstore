@@ -16,6 +16,9 @@ public interface AuthorRepository extends JpaRepository<Author, UUID> {
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM Book WHERE author_id = :authorId; DELETE FROM Author WHERE id = :authorId", nativeQuery = true)
+    @Query(value = """
+                    DELETE FROM Book WHERE author_id = :authorId;
+                    DELETE FROM Author WHERE id = :authorId
+                    """, nativeQuery = true)
     int deleteByIdNativeQuery(@Param("authorId") UUID authorId);
 }
