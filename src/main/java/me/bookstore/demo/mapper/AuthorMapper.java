@@ -1,11 +1,12 @@
 package me.bookstore.demo.mapper;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import me.bookstore.demo.dto.AuthorDto;
 import me.bookstore.demo.entity.Author;
 import me.bookstore.demo.entity.Book;
 import me.bookstore.demo.repository.BookRepository;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.mapstruct.Context;
@@ -39,14 +40,10 @@ public interface AuthorMapper {
 
     @Named("booksIdToBooks")
     default List<Book> booksIdToBooks(List<UUID> booksId, @Context BookRepository bookRepository) {
-        if (booksId == null) {
-            return null;
+        if (booksId == null || booksId.isEmpty()) {
+            return Collections.emptyList();
         }
-        return booksId.stream()
-                .map(bookRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+        return new ArrayList<>(bookRepository.findAllById(booksId));
     }
 }
 

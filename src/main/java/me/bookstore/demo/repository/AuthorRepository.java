@@ -1,7 +1,10 @@
 package me.bookstore.demo.repository;
 
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 import me.bookstore.demo.entity.Author;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +24,10 @@ public interface AuthorRepository extends JpaRepository<Author, UUID> {
                     DELETE FROM Author WHERE id = :authorId
                     """, nativeQuery = true)
     int deleteByIdNativeQuery(@Param("authorId") UUID authorId);
+
+    @EntityGraph(attributePaths = "books")
+    List<Author> findAll();
+
+    @EntityGraph(attributePaths = "books")
+    Optional<Author> findById(UUID id);
 }
