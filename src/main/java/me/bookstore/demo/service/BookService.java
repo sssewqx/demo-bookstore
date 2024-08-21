@@ -1,10 +1,10 @@
 package me.bookstore.demo.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import me.bookstore.demo.dto.BookDto;
 import me.bookstore.demo.dto.BookUpdateRequest;
 import me.bookstore.demo.entity.Book;
+import me.bookstore.demo.exception.BookNotFoundException;
 import me.bookstore.demo.mapper.BookMapper;
 import me.bookstore.demo.repository.AuthorRepository;
 import me.bookstore.demo.repository.BookRepository;
@@ -31,8 +31,8 @@ public class BookService {
     }
 
     public BookDto getBookById(UUID id) {
-        Book bookEntity = bookRepository.findById(id).orElseThrow(()
-                -> new EntityNotFoundException("Book not found."));
+        Book bookEntity = bookRepository.findById(id)
+            .orElseThrow(BookNotFoundException::new);
         return bookMapper.bookToBookDto(bookEntity);
     }
 
@@ -44,12 +44,12 @@ public class BookService {
 
     public BookUpdateRequest updateBook(UUID id, BookUpdateRequest book) {
         if (bookRepository.updateBook(id, book.title()) == UPDATE_FAILED)
-            throw new EntityNotFoundException("Book not found.");
+            throw new BookNotFoundException();
         return book;
     }
 
     public void deleteBook(UUID id) {
         if (bookRepository.deleteByIdNativeQuery(id) == DELETE_FAILED)
-            throw new EntityNotFoundException("Book not found.");
+            throw new BookNotFoundException();
     }
 }

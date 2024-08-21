@@ -1,10 +1,10 @@
 package me.bookstore.demo.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import me.bookstore.demo.dto.AuthorDto;
 import me.bookstore.demo.dto.AuthorUpdateRequest;
 import me.bookstore.demo.entity.Author;
+import me.bookstore.demo.exception.AuthorNotFoundException;
 import me.bookstore.demo.mapper.AuthorMapper;
 import me.bookstore.demo.repository.AuthorRepository;
 import me.bookstore.demo.repository.BookRepository;
@@ -34,8 +34,7 @@ public class AuthorService {
 
     public AuthorDto getAuthorById(UUID id) {
         Author authorEntity = authorRepository.findById(id)
-                .orElseThrow(()
-                        -> new EntityNotFoundException("Author not found."));
+                .orElseThrow(AuthorNotFoundException::new);
         return authorMapper.authorToAuthorDto(authorEntity);
     }
 
@@ -47,12 +46,12 @@ public class AuthorService {
 
     public AuthorUpdateRequest updateAuthor(UUID id, AuthorUpdateRequest author) {
       if (authorRepository.updateAuthor(id, author.firstName(), author.lastName()) == UPDATE_FAILED)
-          throw new EntityNotFoundException("Author not found.");
+          throw new AuthorNotFoundException();
       return author;
     }
 
     public void deleteAuthor(UUID id) {
         if (authorRepository.deleteByIdNativeQuery(id) == DELETE_FAILED)
-            throw new EntityNotFoundException("Author not found.");
+            throw new AuthorNotFoundException();
     }
 }

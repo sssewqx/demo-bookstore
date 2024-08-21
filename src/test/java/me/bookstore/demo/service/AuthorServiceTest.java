@@ -1,11 +1,11 @@
 package me.bookstore.demo.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.bookstore.demo.AbstractIntegrationTest;
 import me.bookstore.demo.dto.AuthorDto;
 import me.bookstore.demo.dto.AuthorUpdateRequest;
+import me.bookstore.demo.exception.AuthorNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Найти несуществующего автора по IP")
     public void testGetAuthorByIdNotFound() {
-        assertThrows(EntityNotFoundException.class, () -> authorService.getAuthorById(INVALID_AUTHOR_ID));
+        assertThrows(AuthorNotFoundException.class, () -> authorService.getAuthorById(INVALID_AUTHOR_ID));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
     public void testUpdateAuthorNotFound() {
         AuthorUpdateRequest updateRequest = new AuthorUpdateRequest("Jane", "Doe");
 
-        assertThrows(EntityNotFoundException.class, ()
+        assertThrows(AuthorNotFoundException.class, ()
                 -> authorService.updateAuthor(INVALID_AUTHOR_ID, updateRequest));
     }
 
@@ -83,12 +83,12 @@ public class AuthorServiceTest extends AbstractIntegrationTest {
     public void testDeleteAuthor() {
         authorService.deleteAuthor(AUTHOR_ID);
 
-        assertThrows(EntityNotFoundException.class, () -> authorService.getAuthorById(AUTHOR_ID));
+        assertThrows(AuthorNotFoundException.class, () -> authorService.getAuthorById(AUTHOR_ID));
     }
 
     @Test
     @DisplayName("Удалить несуществующего автора")
     public void testDeleteAuthorNotFound() {
-        assertThrows(EntityNotFoundException.class, () -> authorService.deleteAuthor(INVALID_AUTHOR_ID));
+        assertThrows(AuthorNotFoundException.class, () -> authorService.deleteAuthor(INVALID_AUTHOR_ID));
     }
 }

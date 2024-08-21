@@ -1,10 +1,10 @@
 package me.bookstore.demo.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import me.bookstore.demo.AbstractIntegrationTest;
 import me.bookstore.demo.dto.BookDto;
 import me.bookstore.demo.dto.BookUpdateRequest;
+import me.bookstore.demo.exception.BookNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class BookServiceTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Найти несуществующую книгу по ID")
     void testGetBookByIdNotFound() {
-        assertThrows(EntityNotFoundException.class, () -> bookService.getBookById(INVALID_BOOK_ID));
+        assertThrows(BookNotFoundException.class, () -> bookService.getBookById(INVALID_BOOK_ID));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class BookServiceTest extends AbstractIntegrationTest {
     void testUpdateBookNotFound() {
         BookUpdateRequest updateRequest = new BookUpdateRequest("New Title");
 
-        assertThrows(EntityNotFoundException.class, ()
+        assertThrows(BookNotFoundException.class, ()
                 -> bookService.updateBook(INVALID_BOOK_ID, updateRequest));
     }
 
@@ -82,12 +82,12 @@ public class BookServiceTest extends AbstractIntegrationTest {
     public void testDeleteBook() {
         bookService.deleteBook(BOOK_ID);
 
-        assertThrows(EntityNotFoundException.class, () -> bookService.getBookById(BOOK_ID));
+        assertThrows(BookNotFoundException.class, () -> bookService.getBookById(BOOK_ID));
     }
 
     @Test
     @DisplayName("Удалить несуществующую книгу")
     public void testDeleteBookNotFound() {
-        assertThrows(EntityNotFoundException.class, () -> bookService.getBookById(INVALID_BOOK_ID));
+        assertThrows(BookNotFoundException.class, () -> bookService.getBookById(INVALID_BOOK_ID));
     }
 }
